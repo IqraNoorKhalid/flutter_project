@@ -71,7 +71,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         radius: 36,
                         backgroundColor: Colors.white,
                         child: session == null
-                            ? Icon(
+                            ? const Icon(
                                 Icons.person_rounded,
                                 size: 40,
                                 color: AppColors.primary,
@@ -280,7 +280,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: AppSizes.lg),
-                  Center(
+                  const Center(
                     child: Text(
                       AppStrings.version,
                       style: TextStyle(

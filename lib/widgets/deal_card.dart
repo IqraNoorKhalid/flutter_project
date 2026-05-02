@@ -95,7 +95,7 @@ class DealCard extends StatelessWidget {
                   children: [
                     Text(
                       'Rs. ${deal.originalPrice.toStringAsFixed(0)}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: AppSizes.fontSizeMd,
                         color: AppColors.textSecondary,
                         decoration: TextDecoration.lineThrough,
@@ -116,7 +116,7 @@ class DealCard extends StatelessWidget {
                 const SizedBox(height: AppSizes.sm),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.timer_outlined,
                       size: AppSizes.iconSm,
                       color: AppColors.textSecondary,
@@ -124,7 +124,7 @@ class DealCard extends StatelessWidget {
                     const SizedBox(width: AppSizes.xs),
                     Text(
                       deal.formattedExpiry,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: AppSizes.fontSizeXs,
                         color: AppColors.textSecondary,
                       ),

@@ -108,7 +108,7 @@ class ListCard extends StatelessWidget {
                                         color: AppColors.success.withValues(alpha: 0.15),
                                         borderRadius: BorderRadius.circular(999),
                                       ),
-                                      child: Text(
+                                      child: const Text(
                                         'Done',
                                         style: TextStyle(
                                           color: AppColors.success,

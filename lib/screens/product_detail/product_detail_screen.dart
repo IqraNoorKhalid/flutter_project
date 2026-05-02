@@ -95,12 +95,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           vertical: AppSizes.xs,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.secondary.withOpacity(0.2),
+                          color: AppColors.secondary.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                         ),
                         child: Text(
                           product.category,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: AppColors.secondaryDark,
                             fontSize: AppSizes.fontSizeSm,
                           ),
@@ -156,7 +156,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       dotData: const FlDotData(show: false),
                       belowBarData: BarAreaData(
                         show: true,
-                        color: AppColors.primary.withOpacity(0.1),
+                        color: AppColors.primary.withValues(alpha: 0.1),
                       ),
                     ),
                   ],
@@ -180,7 +180,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 isBestDeal: isBestDeal,
                 lowestPrice: product.currentLowestPrice,
               );
-            }).toList(),
+            }),
           ],
         ),
       ),
@@ -197,7 +197,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             builder: (context, setDialogState) {
               return DropdownButtonFormField<String>(
                 hint: const Text('Select a list'),
-                value: _selectedListId,
+                initialValue: _selectedListId,
                 items: lists.map((list) {
                   return DropdownMenuItem<String>(
                     value: list.id,

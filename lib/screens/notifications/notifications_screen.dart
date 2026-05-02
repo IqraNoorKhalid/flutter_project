@@ -64,7 +64,7 @@ class NotificationsScreen extends ConsumerWidget {
                           onPressed: () {
                             ref.read(notificationsProvider.notifier).markAllAsRead();
                           },
-                          child: Text(AppStrings.markAllRead),
+                          child: const Text(AppStrings.markAllRead),
                         ),
                     ],
                   ),

@@ -263,7 +263,7 @@ class _ListsEmpty extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSizes.sm),
-          Text(
+          const Text(
             AppStrings.noListsSubtitle,
             textAlign: TextAlign.center,
             style: TextStyle(

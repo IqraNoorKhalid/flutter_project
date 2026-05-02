@@ -163,7 +163,7 @@ class _TrackerEmpty extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSizes.sm),
-          Text(
+          const Text(
             AppStrings.trackerEmptyHint,
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -246,7 +246,7 @@ class _TrackerProductCard extends ConsumerWidget {
                     const SizedBox(height: 4),
                     Text(
                       category,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
                         fontWeight: FontWeight.w600,
@@ -286,7 +286,7 @@ class _TrackerProductCard extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
+                  const Text(
                     AppStrings.lowestPriceLabel,
                     style: TextStyle(fontSize: 10, color: AppColors.textSecondary, fontWeight: FontWeight.w600),
                   ),

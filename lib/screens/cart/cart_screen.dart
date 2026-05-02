@@ -215,11 +215,11 @@ class CartScreen extends ConsumerWidget {
                       ],
                     ),
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSizes.radiusXl)),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: AppColors.shadow,
                         blurRadius: 20,
-                        offset: const Offset(0, -4),
+                        offset: Offset(0, -4),
                       ),
                     ],
                   ),

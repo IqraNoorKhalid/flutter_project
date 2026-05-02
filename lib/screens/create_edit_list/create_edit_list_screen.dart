@@ -135,7 +135,7 @@ class _CreateEditListScreenState extends ConsumerState<CreateEditListScreen> {
                     ),
                     const SizedBox(height: AppSizes.md),
                     DropdownButtonFormField<String>(
-                      value: _selectedTag,
+                      initialValue: _selectedTag,
                       decoration: const InputDecoration(
                         labelText: 'Category tag',
                       ),
@@ -195,7 +195,7 @@ class _CreateEditListScreenState extends ConsumerState<CreateEditListScreen> {
                         const SizedBox(width: AppSizes.sm),
                         Expanded(
                           child: DropdownButtonFormField<String>(
-                            value: _unit,
+                            initialValue: _unit,
                             decoration: const InputDecoration(labelText: 'Unit'),
                             items: _units.map((unit) {
                               return DropdownMenuItem(value: unit, child: Text(unit));

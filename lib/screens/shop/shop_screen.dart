@@ -147,7 +147,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                                   color: scheme.onSurfaceVariant,
                                 ),
                               ),
-                              Text(
+                              const Text(
                                 AppStrings.tapToSearch,
                                 style: TextStyle(
                                   fontSize: AppSizes.fontSizeXs,
@@ -213,7 +213,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                 children: [
                   Text(
                     '${visible.length} ${AppStrings.items}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: AppSizes.fontSizeSm,
                       color: AppColors.textSecondary,
                       fontWeight: FontWeight.w500,
@@ -425,7 +425,7 @@ class _ProductGridTile extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     product.category,
-                    style: TextStyle(fontSize: 11, color: AppColors.textSecondary, fontWeight: FontWeight.w500),
+                    style: const TextStyle(fontSize: 11, color: AppColors.textSecondary, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 6),
                   Row(

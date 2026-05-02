@@ -106,13 +106,13 @@ class _StoreDealsScreenState extends ConsumerState<StoreDealsScreen> {
                           color: Colors.white.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(999),
                         ),
-                        child: Row(
+                        child: const Row(
                           children: [
-                            const Icon(Icons.timer_rounded, color: Colors.white, size: 18),
-                            const SizedBox(width: 6),
+                            Icon(Icons.timer_rounded, color: Colors.white, size: 18),
+                            SizedBox(width: 6),
                             Text(
                               AppStrings.dealsLiveBadge,
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
                             ),
                           ],
                         ),
@@ -188,7 +188,7 @@ class _StoreDealsScreenState extends ConsumerState<StoreDealsScreen> {
                 children: [
                   Text(
                     '${filteredDeals.length} ${AppStrings.dealsAvailable}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: AppSizes.fontSizeSm,
                       color: AppColors.textSecondary,
                       fontWeight: FontWeight.w600,
@@ -220,7 +220,7 @@ class _StoreDealsScreenState extends ConsumerState<StoreDealsScreen> {
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: AppSizes.sm),
-                      Text(
+                      const Text(
                         AppStrings.tryAnotherCategory,
                         textAlign: TextAlign.center,
                         style: TextStyle(color: AppColors.textSecondary),
@@ -274,7 +274,7 @@ class _StoreDealsScreenState extends ConsumerState<StoreDealsScreen> {
             const SizedBox(height: AppSizes.sm),
             Text(
               '${deal.storeName} · ${deal.category}',
-              style: TextStyle(color: AppColors.textSecondary),
+              style: const TextStyle(color: AppColors.textSecondary),
             ),
             const SizedBox(height: AppSizes.md),
             Row(

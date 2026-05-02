@@ -179,10 +179,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               width: 22,
                               child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                             )
-                          : Text(AppStrings.signIn),
+                          : const Text(AppStrings.signIn),
                     ),
                     const SizedBox(height: AppSizes.md),
-                    Text(
+                    const Text(
                       AppStrings.loginDemoHint,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: AppSizes.fontSizeSm, color: AppColors.textSecondary),

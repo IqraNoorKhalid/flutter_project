@@ -124,7 +124,7 @@ class HomeScreen extends ConsumerWidget {
                     child: _QuickAction(
                       icon: Icons.storefront_rounded,
                       label: AppStrings.shop,
-                      colors: [AppColors.primaryLight, AppColors.primary],
+                      colors: const [AppColors.primaryLight, AppColors.primary],
                       onTap: () => context.go('/shop'),
                     ),
                   ),
@@ -133,7 +133,7 @@ class HomeScreen extends ConsumerWidget {
                     child: _QuickAction(
                       icon: Icons.local_offer_rounded,
                       label: AppStrings.todaysDeals,
-                      colors: [AppColors.secondaryLight, AppColors.secondary],
+                      colors: const [AppColors.secondaryLight, AppColors.secondary],
                       onTap: () => context.push('/deals'),
                     ),
                   ),
@@ -142,7 +142,7 @@ class HomeScreen extends ConsumerWidget {
                     child: _QuickAction(
                       icon: Icons.compare_arrows_rounded,
                       label: AppStrings.compare,
-                      colors: [AppColors.accentIndigo, Color(0xFF3949AB)],
+                      colors: const [AppColors.accentIndigo, Color(0xFF3949AB)],
                       onTap: () {
                         if (lists.isNotEmpty) {
                           context.push('/lists/${lists.first.id}/compare');
@@ -437,7 +437,7 @@ class _StatCard extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             maxLines: 2,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 10,
               height: 1.2,
               color: AppColors.textSecondary,

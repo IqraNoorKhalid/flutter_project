@@ -9,6 +9,8 @@ import '../../models/product.dart';
 import '../../widgets/custom_bottom_nav.dart';
 import '../../widgets/app_cart_button.dart';
 import '../../widgets/product_photo.dart';
+import '../../widgets/site_page_header.dart';
+import '../../core/layout/app_layout.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/constants/app_colors.dart';
@@ -44,74 +46,23 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
     final products = ref.watch(productsProvider);
     final categories = _categories(products);
     final visible = _filtered(products);
-    final top = MediaQuery.paddingOf(context).top;
     final scheme = Theme.of(context).colorScheme;
+    final gutter = AppLayout.pageGutter(context);
 
     return Scaffold(
-      backgroundColor: scheme.surfaceContainerLow.withValues(alpha: 0.5),
+      backgroundColor: scheme.surfaceContainerLowest,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(AppSizes.md, top + AppSizes.md, AppSizes.md, AppSizes.lg),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [AppColors.heroStart, AppColors.heroEnd],
-                ),
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(AppSizes.radiusXl),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.25),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          AppStrings.shop,
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: -0.5,
-                              ),
-                        ),
-                      ),
-                      const AppCartButton(foregroundColor: Colors.white),
-                    ],
-                  ),
-                  const SizedBox(height: AppSizes.sm),
-                  Text(
-                    AppStrings.shopHeroTitle,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.95),
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  const SizedBox(height: AppSizes.xs),
-                  Text(
-                    AppStrings.shopHeroSubtitle,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.88),
-                        ),
-                  ),
-                ],
-              ),
+            child: SitePageHeader(
+              title: AppStrings.shop,
+              subtitle: '${AppStrings.shopHeroTitle}\n${AppStrings.shopHeroSubtitle}',
+              trailing: const <Widget>[AppCartButton()],
             ),
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.lg, AppSizes.md, AppSizes.sm),
+              padding: EdgeInsets.fromLTRB(gutter, AppSizes.lg, gutter, AppSizes.sm),
               child: Material(
                 color: scheme.surface,
                 elevation: 2,
@@ -167,7 +118,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.sm, AppSizes.md, AppSizes.sm),
+              padding: EdgeInsets.fromLTRB(gutter, AppSizes.sm, gutter, AppSizes.sm),
               child: Row(
                 children: [
                   Icon(Icons.category_rounded, size: 20, color: scheme.primary),
@@ -186,7 +137,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
             child: SizedBox(
               height: 46,
               child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                padding: EdgeInsets.symmetric(horizontal: gutter),
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 10),
@@ -208,7 +159,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.md, AppSizes.md, AppSizes.sm),
+              padding: EdgeInsets.fromLTRB(gutter, AppSizes.md, gutter, AppSizes.sm),
               child: Row(
                 children: [
                   Text(
@@ -224,7 +175,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+            padding: EdgeInsets.symmetric(horizontal: gutter),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,

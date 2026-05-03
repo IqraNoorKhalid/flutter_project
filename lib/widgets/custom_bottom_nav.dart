@@ -37,22 +37,31 @@ class CustomBottomNav extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return Material(
-      elevation: 8,
-      shadowColor: AppColors.shadow,
+      elevation: 0,
       color: Colors.transparent,
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        child: NavigationBar(
-          height: 68,
-          selectedIndex: currentIndex,
-          onDestinationSelected: (i) => _go(context, i),
-          backgroundColor: scheme.surface,
-          surfaceTintColor: scheme.surfaceTint,
-          indicatorColor: scheme.primaryContainer,
-          shadowColor: Colors.transparent,
-          elevation: 0,
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-          destinations: [
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: scheme.outlineVariant.withValues(alpha: 0.65),
+          ),
+          Material(
+            elevation: 8,
+            shadowColor: AppColors.shadow,
+            color: scheme.surface,
+            child: NavigationBar(
+              height: 68,
+              selectedIndex: currentIndex,
+              onDestinationSelected: (i) => _go(context, i),
+              backgroundColor: scheme.surface,
+              surfaceTintColor: Colors.transparent,
+              indicatorColor: scheme.primaryContainer,
+              shadowColor: Colors.transparent,
+              elevation: 0,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+              destinations: [
             NavigationDestination(
               icon: Icon(Icons.home_outlined, color: scheme.onSurfaceVariant),
               selectedIcon: Icon(Icons.home_rounded, color: scheme.primary),
@@ -78,8 +87,10 @@ class CustomBottomNav extends StatelessWidget {
               selectedIcon: Icon(Icons.person_rounded, color: scheme.primary),
               label: AppStrings.profile,
             ),
-          ],
-        ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -48,4 +48,26 @@ class ShoppingList {
       items: items ?? this.items,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'createdAt': createdAt.toIso8601String(),
+        'tags': tags,
+        'isCompleted': isCompleted,
+        'items': items.map((i) => i.toJson()).toList(),
+      };
+
+  factory ShoppingList.fromJson(Map<String, dynamic> json) {
+    return ShoppingList(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      tags: List<String>.from(json['tags'] as List<dynamic>),
+      isCompleted: json['isCompleted'] as bool,
+      items: (json['items'] as List<dynamic>)
+          .map((e) => ShoppingItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
 }

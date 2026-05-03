@@ -7,6 +7,7 @@ import '../../providers/cart_provider.dart';
 import '../../models/product.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
+import '../../core/layout/app_layout.dart';
 import '../../widgets/product_photo.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -42,8 +43,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final products = ref.watch(productsProvider);
     final results = _matches(products, _controller.text);
 
+    final scheme = Theme.of(context).colorScheme;
+
     return Scaffold(
+      backgroundColor: scheme.surfaceContainerLowest,
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         title: TextField(
           controller: _controller,
           autofocus: true,
@@ -61,8 +66,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
         ],
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(AppSizes.md),
+      body: AppLayout.constrainBody(
+        context: context,
+        child: ListView.separated(
+          padding: const EdgeInsets.symmetric(vertical: AppSizes.md),
         itemCount: results.length,
         separatorBuilder: (_, __) => const SizedBox(height: AppSizes.sm),
         itemBuilder: (context, index) {
@@ -106,6 +113,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           );
         },
+        ),
       ),
     );
   }

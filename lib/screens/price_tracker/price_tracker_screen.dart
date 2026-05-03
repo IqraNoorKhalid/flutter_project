@@ -10,6 +10,8 @@ import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../widgets/custom_bottom_nav.dart';
 import '../../widgets/product_photo.dart';
+import '../../widgets/site_page_header.dart';
+import '../../core/layout/app_layout.dart';
 
 class PriceTrackerScreen extends ConsumerWidget {
   const PriceTrackerScreen({super.key});
@@ -18,90 +20,37 @@ class PriceTrackerScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final trackedProducts = ref.watch(trackedProductsProvider);
     final scheme = Theme.of(context).colorScheme;
-    final top = MediaQuery.paddingOf(context).top;
+    final gutter = AppLayout.pageGutter(context);
 
     return Scaffold(
-      backgroundColor: scheme.surfaceContainerLow.withValues(alpha: 0.45),
+      backgroundColor: scheme.surfaceContainerLowest,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(AppSizes.md, top + AppSizes.md, AppSizes.md, AppSizes.lg),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF1A237E), Color(0xFF3949AB)],
+            child: SitePageHeader(
+              title: AppStrings.priceTracker,
+              subtitle: AppStrings.trackerHeroSubtitle,
+              bottom: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: scheme.primaryContainer.withValues(alpha: 0.45),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.4)),
                 ),
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(AppSizes.radiusXl),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.bookmark_added_rounded, size: 18, color: scheme.primary),
+                    const SizedBox(width: 8),
+                    Text(
+                      '${trackedProducts.length} ${AppStrings.itemsOnWatch}',
+                      style: TextStyle(
+                        color: scheme.onSurface,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF1A237E).withValues(alpha: 0.35),
-                    blurRadius: 18,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(Icons.show_chart_rounded, color: Colors.white, size: 26),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              AppStrings.priceTracker,
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              AppStrings.trackerHeroSubtitle,
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Colors.white.withValues(alpha: 0.88),
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSizes.md),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.bookmark_added_rounded, size: 18, color: Colors.amber.shade200),
-                        const SizedBox(width: 8),
-                        Text(
-                          '${trackedProducts.length} ${AppStrings.itemsOnWatch}',
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ),
             ),
           ),
@@ -112,7 +61,7 @@ class PriceTrackerScreen extends ConsumerWidget {
             )
           else
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.lg, AppSizes.md, 100),
+              padding: EdgeInsets.fromLTRB(gutter, AppSizes.lg, gutter, 100),
               sliver: SliverList.separated(
                 itemCount: trackedProducts.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 12),

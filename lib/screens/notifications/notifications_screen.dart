@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/notifications_provider.dart';
+import '../../widgets/site_page_header.dart';
+import '../../core/layout/app_layout.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
@@ -14,77 +16,29 @@ class NotificationsScreen extends ConsumerWidget {
     final notifications = ref.watch(notificationsProvider);
     final unreadCount = ref.watch(unreadNotificationsCountProvider);
     final scheme = Theme.of(context).colorScheme;
-    final top = MediaQuery.paddingOf(context).top;
+    final gutter = AppLayout.pageGutter(context);
 
     return Scaffold(
       backgroundColor: scheme.surfaceContainerLowest,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(AppSizes.md, top + AppSizes.md, AppSizes.md, AppSizes.lg),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF1565C0), Color(0xFF0D47A1)],
-                ),
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(AppSizes.radiusXl),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF1565C0).withValues(alpha: 0.25),
-                    blurRadius: 16,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+            child: SitePageHeader(
+              title: AppStrings.notifications,
+              subtitle: unreadCount > 0 ? '$unreadCount unread' : 'You are all caught up',
+              leading: IconButton(
+                onPressed: () => Navigator.of(context).maybePop(),
+                icon: const Icon(Icons.arrow_back_rounded),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () => Navigator.of(context).maybePop(),
-                        style: IconButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.white.withValues(alpha: 0.15),
-                        ),
-                        icon: const Icon(Icons.arrow_back_rounded),
-                      ),
-                      const Spacer(),
-                      if (unreadCount > 0)
-                        FilledButton.tonal(
-                          style: FilledButton.styleFrom(
-                            backgroundColor: Colors.white.withValues(alpha: 0.2),
-                            foregroundColor: Colors.white,
-                          ),
-                          onPressed: () {
-                            ref.read(notificationsProvider.notifier).markAllAsRead();
-                          },
-                          child: const Text(AppStrings.markAllRead),
-                        ),
-                    ],
+              trailing: [
+                if (unreadCount > 0)
+                  FilledButton.tonal(
+                    onPressed: () {
+                      ref.read(notificationsProvider.notifier).markAllAsRead();
+                    },
+                    child: const Text(AppStrings.markAllRead),
                   ),
-                  Text(
-                    AppStrings.notifications,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    unreadCount > 0 ? '$unreadCount unread' : 'You are all caught up',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.88),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
+              ],
             ),
           ),
           if (notifications.isEmpty)
@@ -110,7 +64,7 @@ class NotificationsScreen extends ConsumerWidget {
             )
           else
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.lg, AppSizes.md, 32),
+              padding: EdgeInsets.fromLTRB(gutter, AppSizes.lg, gutter, 32),
               sliver: SliverList.separated(
                 itemCount: notifications.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 10),

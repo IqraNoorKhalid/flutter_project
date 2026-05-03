@@ -1,22 +1,41 @@
 // lib/providers/lists_provider.dart
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/shopping_list.dart';
 import '../models/shopping_item.dart';
 import '../dummy_data/dummy_data.dart';
+import '../services/app_local_storage.dart';
 
 class ListsNotifier extends StateNotifier<List<ShoppingList>> {
-  ListsNotifier() : super(DummyData.cloneShoppingLists());
+  ListsNotifier() : super(DummyData.cloneShoppingLists()) {
+    unawaited(_restore());
+  }
+
+  Future<void> _restore() async {
+    final loaded = await AppLocalStorage.loadShoppingLists();
+    if (loaded != null && loaded.isNotEmpty) {
+      state = loaded;
+    }
+  }
+
+  void _persist() {
+    unawaited(AppLocalStorage.saveShoppingLists(state));
+  }
 
   void addList(ShoppingList list) {
     state = [...state, list];
+    _persist();
   }
 
   void updateList(ShoppingList updatedList) {
     state = state.map((list) => list.id == updatedList.id ? updatedList : list).toList();
+    _persist();
   }
 
   void deleteList(String listId) {
     state = state.where((list) => list.id != listId).toList();
+    _persist();
   }
 
   void toggleItemCheck(String listId, String itemId) {
@@ -35,6 +54,7 @@ class ListsNotifier extends StateNotifier<List<ShoppingList>> {
         isCompleted: allChecked,
       );
     }).toList();
+    _persist();
   }
 
   void addItemToList(String listId, ShoppingItem newItem) {
@@ -45,6 +65,7 @@ class ListsNotifier extends StateNotifier<List<ShoppingList>> {
         isCompleted: false,
       );
     }).toList();
+    _persist();
   }
 
   void removeItemFromList(String listId, String itemId) {
@@ -53,11 +74,13 @@ class ListsNotifier extends StateNotifier<List<ShoppingList>> {
       final updatedItems = list.items.where((item) => item.id != itemId).toList();
       return list.copyWith(items: updatedItems);
     }).toList();
+    _persist();
   }
 
   /// Restore seed lists (UI demo reset).
   void resetToDummy() {
     state = DummyData.cloneShoppingLists();
+    _persist();
   }
 }
 

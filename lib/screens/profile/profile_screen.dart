@@ -6,11 +6,13 @@ import '../../providers/theme_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/lists_provider.dart';
 import '../../providers/products_provider.dart';
+import '../../services/app_local_storage.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../widgets/custom_bottom_nav.dart';
 import '../../widgets/store_badge.dart';
+import '../../core/layout/app_layout.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -33,93 +35,120 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final emailLine = session?.email ?? AppStrings.guestSubtitle;
 
     return Scaffold(
+      backgroundColor: scheme.surfaceContainerLowest,
       body: CustomScrollView(
         slivers: [
           SliverAppBar.large(
             expandedHeight: 200,
             pinned: true,
+            backgroundColor: scheme.surface,
+            surfaceTintColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 AppStrings.profile,
                 style: TextStyle(
                   color: scheme.onSurface,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
-              background: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.heroStart,
-                      AppColors.heroEnd,
-                    ],
+              background: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ColoredBox(color: scheme.surface),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 3,
+                    child: ColoredBox(color: scheme.primary),
                   ),
-                ),
-                alignment: Alignment.bottomCenter,
-                padding: const EdgeInsets.only(bottom: 56, left: AppSizes.md, right: AppSizes.md),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(3),
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      alignment: Alignment.bottomCenter,
+                      padding: EdgeInsets.only(
+                        bottom: 56,
+                        left: AppLayout.pageGutter(context),
+                        right: AppLayout.pageGutter(context),
+                      ),
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white.withValues(alpha: 0.35),
+                        border: Border(
+                          bottom: BorderSide(
+                            color: scheme.outlineVariant.withValues(alpha: 0.65),
+                          ),
+                        ),
                       ),
-                      child: CircleAvatar(
-                        radius: 36,
-                        backgroundColor: Colors.white,
-                        child: session == null
-                            ? const Icon(
-                                Icons.person_rounded,
-                                size: 40,
-                                color: AppColors.primary,
-                              )
-                            : Text(
-                                session.displayName.isNotEmpty
-                                    ? session.displayName[0].toUpperCase()
-                                    : '?',
-                                style: const TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                      ),
-                    ),
-                    const SizedBox(width: AppSizes.md),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
                         children: [
-                          Text(
-                            displayName,
-                            style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                          Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: scheme.primaryContainer.withValues(alpha: 0.5),
+                            ),
+                            child: CircleAvatar(
+                              radius: 36,
+                              backgroundColor: scheme.surface,
+                              child: session == null
+                                  ? Icon(
+                                      Icons.person_rounded,
+                                      size: 40,
+                                      color: scheme.primary,
+                                    )
+                                  : Text(
+                                      session.displayName.isNotEmpty
+                                          ? session.displayName[0].toUpperCase()
+                                          : '?',
+                                      style: TextStyle(
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold,
+                                        color: scheme.primary,
+                                      ),
+                                    ),
                             ),
                           ),
-                          Text(
-                            emailLine,
-                            style: TextStyle(
-                              fontSize: AppSizes.fontSizeMd,
-                              color: Colors.white.withValues(alpha: 0.9),
+                          const SizedBox(width: AppSizes.md),
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  displayName,
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: scheme.onSurface,
+                                  ),
+                                ),
+                                Text(
+                                  emailLine,
+                                  style: TextStyle(
+                                    fontSize: AppSizes.fontSizeMd,
+                                    color: scheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(AppSizes.md),
+              padding: EdgeInsets.fromLTRB(
+                AppLayout.pageGutter(context),
+                AppSizes.md,
+                AppLayout.pageGutter(context),
+                AppSizes.md,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -340,13 +369,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             child: const Text(AppStrings.cancel),
           ),
           FilledButton(
-            onPressed: () {
+            onPressed: () async {
+              await AppLocalStorage.clearAll();
               ref.read(listsProvider.notifier).resetToDummy();
               ref.read(productsProvider.notifier).resetToDummy();
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('All data cleared')),
-              );
+              if (context.mounted) Navigator.pop(context);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('All data cleared')),
+                );
+              }
             },
             style: FilledButton.styleFrom(backgroundColor: AppColors.error),
             child: const Text('Clear'),

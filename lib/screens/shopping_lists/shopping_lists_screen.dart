@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../providers/lists_provider.dart';
 import '../../widgets/list_card.dart';
 import '../../widgets/custom_bottom_nav.dart';
+import '../../widgets/site_page_header.dart';
+import '../../core/layout/app_layout.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/constants/app_colors.dart';
@@ -16,101 +18,58 @@ class ShoppingListsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final lists = ref.watch(listsProvider);
-    final activeLists = lists.where((l) => !l.isCompleted).toList();
-    final completedLists = lists.where((l) => l.isCompleted).toList();
+    final activeLists = lists.where((l) => !l.isCompleted).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final completedLists = lists.where((l) => l.isCompleted).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     final scheme = Theme.of(context).colorScheme;
-    final top = MediaQuery.paddingOf(context).top;
+    final gutter = AppLayout.pageGutter(context);
 
     return Scaffold(
-      backgroundColor: scheme.surfaceContainerLow.withValues(alpha: 0.4),
+      backgroundColor: scheme.surfaceContainerLowest,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(AppSizes.md, top + AppSizes.md, AppSizes.md, AppSizes.lg),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [AppColors.primary, AppColors.primaryDark],
-                ),
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(AppSizes.radiusXl),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.28),
-                    blurRadius: 18,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+            child: SitePageHeader(
+              title: AppStrings.myLists,
+              subtitle: AppStrings.listsScreenSubtitle,
+              leading: IconButton(
+                onPressed: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go('/home');
+                  }
+                },
+                icon: const Icon(Icons.arrow_back_rounded),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              trailing: [
+                IconButton(
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Newest lists first — swipe a list for edit or delete'),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.info_outline_rounded),
+                  tooltip: 'Sort info',
+                ),
+              ],
+              bottom: Wrap(
+                spacing: 10,
+                runSpacing: 8,
                 children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          if (context.canPop()) {
-                            context.pop();
-                          } else {
-                            context.go('/home');
-                          }
-                        },
-                        style: IconButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.white.withValues(alpha: 0.18),
-                        ),
-                        icon: const Icon(Icons.arrow_back_rounded),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text(AppStrings.sortComingSoon)),
-                          );
-                        },
-                        style: IconButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.white.withValues(alpha: 0.18),
-                        ),
-                        icon: const Icon(Icons.sort_rounded),
-                      ),
-                    ],
+                  _StatChip(
+                    scheme: scheme,
+                    icon: Icons.playlist_play_rounded,
+                    label: '${activeLists.length} ${AppStrings.active}',
                   ),
-                  Text(
-                    AppStrings.myLists,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: AppSizes.sm),
-                  Text(
-                    AppStrings.listsScreenSubtitle,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.35,
-                        ),
-                  ),
-                  const SizedBox(height: AppSizes.md),
-                  Row(
-                    children: [
-                      _StatChip(
-                        icon: Icons.playlist_play_rounded,
-                        label: '${activeLists.length} ${AppStrings.active}',
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 10),
-                      _StatChip(
-                        icon: Icons.check_circle_outline_rounded,
-                        label: '${completedLists.length} ${AppStrings.done}',
-                        color: Colors.white,
-                      ),
-                    ],
+                  _StatChip(
+                    scheme: scheme,
+                    icon: Icons.check_circle_outline_rounded,
+                    label: '${completedLists.length} ${AppStrings.done}',
                   ),
                 ],
               ),
@@ -125,7 +84,7 @@ class ShoppingListsScreen extends ConsumerWidget {
             if (activeLists.isNotEmpty)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.lg, AppSizes.md, AppSizes.sm),
+                  padding: EdgeInsets.fromLTRB(gutter, AppSizes.lg, gutter, AppSizes.sm),
                   child: Text(
                     AppStrings.activeListsSection,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -137,7 +96,7 @@ class ShoppingListsScreen extends ConsumerWidget {
                 (context, index) {
                   final list = activeLists[index];
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                    padding: EdgeInsets.symmetric(horizontal: gutter),
                     child: ListCard(
                       list: list,
                       onTap: () => context.go('/lists/${list.id}'),
@@ -152,7 +111,7 @@ class ShoppingListsScreen extends ConsumerWidget {
             if (completedLists.isNotEmpty) ...[
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.lg, AppSizes.md, AppSizes.sm),
+                  padding: EdgeInsets.fromLTRB(gutter, AppSizes.lg, gutter, AppSizes.sm),
                   child: Text(
                     AppStrings.completedListsSection,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -164,7 +123,7 @@ class ShoppingListsScreen extends ConsumerWidget {
                   (context, index) {
                     final list = completedLists[index];
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                      padding: EdgeInsets.symmetric(horizontal: gutter),
                       child: ListCard(
                         list: list,
                         onTap: () => context.go('/lists/${list.id}'),
@@ -196,32 +155,36 @@ class ShoppingListsScreen extends ConsumerWidget {
 
 class _StatChip extends StatelessWidget {
   const _StatChip({
+    required this.scheme,
     required this.icon,
     required this.label,
-    required this.color,
   });
 
+  final ColorScheme scheme;
   final IconData icon;
   final String label;
-  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.14),
+        color: scheme.primaryContainer.withValues(alpha: 0.55),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.22)),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.45)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18, color: color),
+          Icon(icon, size: 18, color: scheme.primary),
           const SizedBox(width: 6),
           Text(
             label,
-            style: TextStyle(color: color, fontWeight: FontWeight.w600, fontSize: 13),
+            style: TextStyle(
+              color: scheme.onSurface,
+              fontWeight: FontWeight.w700,
+              fontSize: 13,
+            ),
           ),
         ],
       ),

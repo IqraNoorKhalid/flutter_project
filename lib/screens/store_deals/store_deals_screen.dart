@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../providers/deals_provider.dart';
 import '../../models/store_offer.dart';
 import '../../widgets/deal_card.dart';
+import '../../widgets/site_page_header.dart';
+import '../../core/layout/app_layout.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
@@ -53,95 +55,56 @@ class _StoreDealsScreenState extends ConsumerState<StoreDealsScreen> {
   Widget build(BuildContext context) {
     final filteredDeals = _filtered();
     final scheme = Theme.of(context).colorScheme;
-    final top = MediaQuery.paddingOf(context).top;
+    final gutter = AppLayout.pageGutter(context);
 
     return Scaffold(
-      backgroundColor: scheme.surfaceContainerLow.withValues(alpha: 0.45),
+      backgroundColor: scheme.surfaceContainerLowest,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(AppSizes.md, top + AppSizes.md, AppSizes.md, AppSizes.lg),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFFE65100), Color(0xFFBF360C)],
-                ),
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(AppSizes.radiusXl),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.secondary.withValues(alpha: 0.35),
-                    blurRadius: 18,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+            child: SitePageHeader(
+              title: AppStrings.todaysDeals,
+              subtitle: AppStrings.dealsScreenSubtitle,
+              leading: IconButton(
+                onPressed: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go('/home');
+                  }
+                },
+                icon: const Icon(Icons.arrow_back_rounded),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+              trailing: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: scheme.secondaryContainer.withValues(alpha: 0.65),
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.35)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          if (context.canPop()) {
-                            context.pop();
-                          } else {
-                            context.go('/home');
-                          }
-                        },
-                        style: IconButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.white.withValues(alpha: 0.18),
-                        ),
-                        icon: const Icon(Icons.arrow_back_rounded),
-                      ),
-                      const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.timer_rounded, color: Colors.white, size: 18),
-                            SizedBox(width: 6),
-                            Text(
-                              AppStrings.dealsLiveBadge,
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
-                            ),
-                          ],
+                      Icon(Icons.timer_rounded, color: scheme.onSecondaryContainer, size: 18),
+                      const SizedBox(width: 6),
+                      Text(
+                        AppStrings.dealsLiveBadge,
+                        style: TextStyle(
+                          color: scheme.onSecondaryContainer,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSizes.sm),
-                  Text(
-                    AppStrings.todaysDeals,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: AppSizes.sm),
-                  Text(
-                    AppStrings.dealsScreenSubtitle,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.92),
-                          height: 1.35,
-                        ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.lg, AppSizes.md, AppSizes.sm),
+              padding: EdgeInsets.fromLTRB(gutter, AppSizes.lg, gutter, AppSizes.sm),
               child: Row(
                 children: [
                   Icon(Icons.filter_alt_rounded, size: 20, color: scheme.primary),
@@ -158,7 +121,7 @@ class _StoreDealsScreenState extends ConsumerState<StoreDealsScreen> {
             child: SizedBox(
               height: 46,
               child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                padding: EdgeInsets.symmetric(horizontal: gutter),
                 scrollDirection: Axis.horizontal,
                 itemCount: _categories.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 10),
@@ -182,7 +145,7 @@ class _StoreDealsScreenState extends ConsumerState<StoreDealsScreen> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.md, AppSizes.md, AppSizes.sm),
+              padding: EdgeInsets.fromLTRB(gutter, AppSizes.md, gutter, AppSizes.sm),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -232,7 +195,7 @@ class _StoreDealsScreenState extends ConsumerState<StoreDealsScreen> {
             )
           else
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+              padding: EdgeInsets.symmetric(horizontal: gutter),
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,

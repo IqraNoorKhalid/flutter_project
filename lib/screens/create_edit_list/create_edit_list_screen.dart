@@ -109,6 +109,7 @@ class _CreateEditListScreenState extends ConsumerState<CreateEditListScreen> {
     return Scaffold(
       backgroundColor: scheme.surfaceContainerLowest,
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         title: Text(_isEditing ? AppStrings.editList : AppStrings.createList),
       ),
       body: Form(

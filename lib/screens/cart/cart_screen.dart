@@ -29,6 +29,7 @@ class CartScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: scheme.surfaceContainerLowest,
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         title: const Text(AppStrings.cart),
         actions: [
           if (lines.isNotEmpty)
@@ -208,18 +209,16 @@ class CartScreen extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(AppSizes.lg),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        scheme.surface,
-                        scheme.primaryContainer.withValues(alpha: 0.25),
-                      ],
+                    color: scheme.surface,
+                    border: Border(
+                      top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.65)),
                     ),
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSizes.radiusXl)),
-                    boxShadow: const [
+                    boxShadow: [
                       BoxShadow(
-                        color: AppColors.shadow,
+                        color: scheme.shadow.withValues(alpha: 0.08),
                         blurRadius: 20,
-                        offset: Offset(0, -4),
+                        offset: const Offset(0, -4),
                       ),
                     ],
                   ),

@@ -12,6 +12,7 @@ import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../widgets/price_comparison_card.dart';
 import '../../widgets/product_photo.dart';
+import '../../core/layout/app_layout.dart';
 
 class ProductDetailScreen extends ConsumerStatefulWidget {
   final String productId;
@@ -32,7 +33,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final lists = ref.watch(listsProvider);
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         title: Text(product.name),
         actions: [
           IconButton(
@@ -55,9 +58,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.md),
-        child: Column(
+      body: AppLayout.constrainBody(
+        context: context,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSizes.md),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
@@ -182,6 +187,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               );
             }),
           ],
+        ),
         ),
       ),
     );

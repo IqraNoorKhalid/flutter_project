@@ -37,4 +37,26 @@ class ShoppingItem {
       bestStore: bestStore ?? this.bestStore,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'quantity': quantity,
+        'unit': unit,
+        'isChecked': isChecked,
+        'lowestPrice': lowestPrice,
+        'bestStore': bestStore,
+      };
+
+  factory ShoppingItem.fromJson(Map<String, dynamic> json) {
+    return ShoppingItem(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      quantity: (json['quantity'] as num).toDouble(),
+      unit: json['unit'] as String,
+      isChecked: json['isChecked'] as bool,
+      lowestPrice: (json['lowestPrice'] as num).toDouble(),
+      bestStore: json['bestStore'] as String? ?? '',
+    );
+  }
 }

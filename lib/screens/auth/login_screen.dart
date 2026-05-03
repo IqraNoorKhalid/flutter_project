@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/site_page_header.dart';
+import '../../core/layout/app_layout.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
@@ -52,142 +54,100 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final top = MediaQuery.paddingOf(context).top;
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      backgroundColor: scheme.surfaceContainerLowest,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(AppSizes.md, top + AppSizes.md, AppSizes.md, AppSizes.xl),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [AppColors.heroStart, AppColors.heroEnd],
-                ),
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(AppSizes.radiusXl),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
+            child: SitePageHeader(
+              title: AppStrings.loginTitle,
+              subtitle: AppStrings.loginSubtitle,
+              leading: IconButton(
+                onPressed: () {
+                  if (context.canPop()) context.pop();
+                },
+                icon: const Icon(Icons.arrow_back_rounded),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      if (context.canPop()) context.pop();
-                    },
-                    style: IconButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.white.withValues(alpha: 0.15),
-                    ),
-                    icon: const Icon(Icons.arrow_back_rounded),
-                  ),
-                  const SizedBox(height: AppSizes.md),
-                  Text(
-                    AppStrings.loginTitle,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: AppSizes.sm),
-                  Text(
-                    AppStrings.loginSubtitle,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.35,
-                        ),
-                  ),
-                  const SizedBox(height: AppSizes.lg),
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.lock_person_rounded, size: 48, color: Colors.white),
-                    ),
-                  ),
-                ],
+              bottom: Center(
+                child: CircleAvatar(
+                  radius: 44,
+                  backgroundColor: scheme.primaryContainer.withValues(alpha: 0.85),
+                  child: Icon(Icons.lock_person_rounded, size: 44, color: scheme.primary),
+                ),
               ),
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSizes.lg),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    TextFormField(
-                      controller: _emailCtrl,
-                      keyboardType: TextInputType.emailAddress,
-                      autofillHints: const [AutofillHints.email],
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        labelText: AppStrings.email,
-                        hintText: AppStrings.emailHint,
-                        prefixIcon: Icon(Icons.mail_outline_rounded),
-                      ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) return AppStrings.fieldRequired;
-                        if (!v.contains('@')) return AppStrings.invalidEmail;
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: AppSizes.md),
-                    TextFormField(
-                      controller: _passwordCtrl,
-                      obscureText: _obscure,
-                      textInputAction: TextInputAction.done,
-                      onFieldSubmitted: (_) => _submit(),
-                      autofillHints: const [AutofillHints.password],
-                      decoration: InputDecoration(
-                        labelText: AppStrings.password,
-                        prefixIcon: const Icon(Icons.lock_outline_rounded),
-                        suffixIcon: IconButton(
-                          onPressed: () => setState(() => _obscure = !_obscure),
-                          icon: Icon(_obscure ? Icons.visibility_rounded : Icons.visibility_off_rounded),
+            child: AppLayout.constrainBody(
+              context: context,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSizes.lg),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TextFormField(
+                        controller: _emailCtrl,
+                        keyboardType: TextInputType.emailAddress,
+                        autofillHints: const [AutofillHints.email],
+                        textInputAction: TextInputAction.next,
+                        decoration: const InputDecoration(
+                          labelText: AppStrings.email,
+                          hintText: AppStrings.emailHint,
+                          prefixIcon: Icon(Icons.mail_outline_rounded),
                         ),
+                        validator: (v) {
+                          if (v == null || v.trim().isEmpty) return AppStrings.fieldRequired;
+                          if (!v.contains('@')) return AppStrings.invalidEmail;
+                          return null;
+                        },
                       ),
-                      validator: (v) {
-                        if (v == null || v.isEmpty) return AppStrings.fieldRequired;
-                        if (v.length < 6) return AppStrings.passwordTooShort;
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: AppSizes.lg),
-                    FilledButton(
-                      onPressed: _loading ? null : _submit,
-                      style: FilledButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      const SizedBox(height: AppSizes.md),
+                      TextFormField(
+                        controller: _passwordCtrl,
+                        obscureText: _obscure,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_) => _submit(),
+                        autofillHints: const [AutofillHints.password],
+                        decoration: InputDecoration(
+                          labelText: AppStrings.password,
+                          prefixIcon: const Icon(Icons.lock_outline_rounded),
+                          suffixIcon: IconButton(
+                            onPressed: () => setState(() => _obscure = !_obscure),
+                            icon: Icon(_obscure ? Icons.visibility_rounded : Icons.visibility_off_rounded),
+                          ),
+                        ),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return AppStrings.fieldRequired;
+                          if (v.length < 6) return AppStrings.passwordTooShort;
+                          return null;
+                        },
                       ),
-                      child: _loading
-                          ? const SizedBox(
-                              height: 22,
-                              width: 22,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                            )
-                          : const Text(AppStrings.signIn),
-                    ),
-                    const SizedBox(height: AppSizes.md),
-                    const Text(
-                      AppStrings.loginDemoHint,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: AppSizes.fontSizeSm, color: AppColors.textSecondary),
-                    ),
-                  ],
+                      const SizedBox(height: AppSizes.lg),
+                      FilledButton(
+                        onPressed: _loading ? null : _submit,
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                        child: _loading
+                            ? const SizedBox(
+                                height: 22,
+                                width: 22,
+                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                              )
+                            : const Text(AppStrings.signIn),
+                      ),
+                      const SizedBox(height: AppSizes.md),
+                      const Text(
+                        AppStrings.loginDemoHint,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: AppSizes.fontSizeSm, color: AppColors.textSecondary),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

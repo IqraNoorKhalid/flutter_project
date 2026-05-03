@@ -10,6 +10,8 @@ import '../../widgets/list_card.dart';
 import '../../widgets/deal_card.dart';
 import '../../widgets/custom_bottom_nav.dart';
 import '../../widgets/app_cart_button.dart';
+import '../../widgets/site_page_header.dart';
+import '../../core/layout/app_layout.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_sizes.dart';
@@ -35,96 +37,58 @@ class HomeScreen extends ConsumerWidget {
     final hotDeals = deals.take(5).toList();
     final featured = products.take(6).toList();
     final scheme = Theme.of(context).colorScheme;
-    final top = MediaQuery.paddingOf(context).top;
+    final gutter = AppLayout.pageGutter(context);
 
     return Scaffold(
+      backgroundColor: scheme.surfaceContainerLowest,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(AppSizes.md, top + AppSizes.md, AppSizes.md, AppSizes.lg),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [AppColors.heroStart, AppColors.heroEnd],
+            child: SitePageHeader(
+              title: AppStrings.greeting,
+              subtitle: '${_timeGreeting()} · ${AppStrings.tagline}',
+              trailing: [
+                IconButton(
+                  onPressed: () => context.push('/notifications'),
+                  icon: const Icon(Icons.notifications_none_rounded),
                 ),
-                borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(AppSizes.radiusXl),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _timeGreeting(),
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    color: Colors.white.withValues(alpha: 0.9),
-                                  ),
-                            ),
-                            Text(
-                              AppStrings.greeting,
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                          ],
+                const AppCartButton(),
+              ],
+              bottom: Material(
+                color: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+                  onTap: () => context.push('/search'),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm + 2),
+                    child: Row(
+                      children: [
+                        Icon(Icons.search_rounded, color: scheme.onSurfaceVariant),
+                        const SizedBox(width: AppSizes.sm),
+                        Expanded(
+                          child: Text(
+                            AppStrings.searchProducts,
+                            style: TextStyle(color: scheme.onSurfaceVariant, fontSize: AppSizes.fontSizeMd),
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () => context.push('/notifications'),
-                        icon: const Icon(Icons.notifications_none_rounded, color: Colors.white),
-                      ),
-                      const AppCartButton(foregroundColor: Colors.white),
-                    ],
-                  ),
-                  const SizedBox(height: AppSizes.md),
-                  Material(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-                      onTap: () => context.push('/search'),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm + 2),
-                        child: Row(
-                          children: [
-                            Icon(Icons.search_rounded, color: scheme.onSurfaceVariant),
-                            const SizedBox(width: AppSizes.sm),
-                            Expanded(
-                              child: Text(
-                                AppStrings.searchProducts,
-                                style: TextStyle(color: scheme.onSurfaceVariant, fontSize: AppSizes.fontSizeMd),
-                              ),
-                            ),
-                            Icon(Icons.tune_rounded, size: 20, color: scheme.onSurfaceVariant),
-                          ],
-                        ),
-                      ),
+                        Icon(Icons.tune_rounded, size: 20, color: scheme.onSurfaceVariant),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.lg, AppSizes.md, 0),
+              padding: EdgeInsets.fromLTRB(gutter, AppSizes.lg, gutter, 0),
               child: Row(
                 children: [
                   Expanded(
                     child: _QuickAction(
                       icon: Icons.storefront_rounded,
                       label: AppStrings.shop,
-                      colors: const [AppColors.primaryLight, AppColors.primary],
                       onTap: () => context.go('/shop'),
                     ),
                   ),
@@ -133,7 +97,6 @@ class HomeScreen extends ConsumerWidget {
                     child: _QuickAction(
                       icon: Icons.local_offer_rounded,
                       label: AppStrings.todaysDeals,
-                      colors: const [AppColors.secondaryLight, AppColors.secondary],
                       onTap: () => context.push('/deals'),
                     ),
                   ),
@@ -142,7 +105,6 @@ class HomeScreen extends ConsumerWidget {
                     child: _QuickAction(
                       icon: Icons.compare_arrows_rounded,
                       label: AppStrings.compare,
-                      colors: const [AppColors.accentIndigo, Color(0xFF3949AB)],
                       onTap: () {
                         if (lists.isNotEmpty) {
                           context.push('/lists/${lists.first.id}/compare');
@@ -160,7 +122,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(AppSizes.md),
+              padding: EdgeInsets.fromLTRB(gutter, AppSizes.md, gutter, AppSizes.md),
               child: Row(
                 children: [
                   Expanded(
@@ -196,7 +158,7 @@ class HomeScreen extends ConsumerWidget {
           if (recentLists.isNotEmpty)
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(AppSizes.md, 0, AppSizes.md, AppSizes.sm),
+                padding: EdgeInsets.fromLTRB(gutter, 0, gutter, AppSizes.sm),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -218,7 +180,7 @@ class HomeScreen extends ConsumerWidget {
                 height: 188,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                  padding: EdgeInsets.symmetric(horizontal: gutter),
                   itemCount: recentLists.length,
                   itemBuilder: (context, index) {
                     final list = recentLists[index];
@@ -237,7 +199,7 @@ class HomeScreen extends ConsumerWidget {
             ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.lg, AppSizes.md, AppSizes.sm),
+              padding: EdgeInsets.fromLTRB(gutter, AppSizes.lg, gutter, AppSizes.sm),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -258,7 +220,7 @@ class HomeScreen extends ConsumerWidget {
               height: 132,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                padding: EdgeInsets.symmetric(horizontal: gutter),
                 itemCount: featured.length,
                 separatorBuilder: (_, __) => const SizedBox(width: AppSizes.sm),
                 itemBuilder: (context, index) {
@@ -267,7 +229,6 @@ class HomeScreen extends ConsumerWidget {
                   return _FeaturedChip(
                     productName: p.name,
                     price: p.currentLowestPrice,
-                    colors: vis.colors,
                     icon: vis.icon,
                     onTap: () => context.push('/products/${p.id}'),
                     onAdd: () {
@@ -287,7 +248,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.lg, AppSizes.md, AppSizes.sm),
+              padding: EdgeInsets.fromLTRB(gutter, AppSizes.lg, gutter, AppSizes.sm),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -308,7 +269,7 @@ class HomeScreen extends ConsumerWidget {
               height: 232,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                padding: EdgeInsets.symmetric(horizontal: gutter),
                 itemCount: hotDeals.length,
                 itemBuilder: (context, index) {
                   final deal = hotDeals[index];
@@ -333,50 +294,57 @@ class _QuickAction extends StatelessWidget {
   const _QuickAction({
     required this.icon,
     required this.label,
-    required this.colors,
     required this.onTap,
   });
 
   final IconData icon;
   final String label;
-  final List<Color> colors;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Material(
-      color: Colors.transparent,
+      color: scheme.surface,
+      borderRadius: BorderRadius.circular(AppSizes.radiusLg),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-        child: Ink(
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: AppSizes.md, horizontal: AppSizes.sm),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-            gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: colors),
+            border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.55)),
             boxShadow: [
               BoxShadow(
-                color: colors.last.withValues(alpha: 0.35),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
+                color: scheme.shadow.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-          padding: const EdgeInsets.symmetric(vertical: AppSizes.md, horizontal: AppSizes.sm),
           child: Column(
             children: [
-              Icon(icon, color: Colors.white, size: 26),
-              const SizedBox(height: 6),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: scheme.primaryContainer.withValues(alpha: 0.75),
+                  borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                ),
+                child: Icon(icon, color: scheme.primary, size: 24),
+              ),
+              const SizedBox(height: 8),
               Text(
                 label,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 11,
-                  height: 1.15,
-                ),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 11,
+                      height: 1.15,
+                      color: scheme.onSurface,
+                    ),
               ),
             ],
           ),
@@ -454,7 +422,6 @@ class _FeaturedChip extends StatelessWidget {
   const _FeaturedChip({
     required this.productName,
     required this.price,
-    required this.colors,
     required this.icon,
     required this.onTap,
     required this.onAdd,
@@ -462,18 +429,18 @@ class _FeaturedChip extends StatelessWidget {
 
   final String productName;
   final double price;
-  final List<Color> colors;
   final IconData icon;
   final VoidCallback onTap;
   final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Material(
-      color: Theme.of(context).colorScheme.surface,
+      color: scheme.surface,
       borderRadius: BorderRadius.circular(AppSizes.radiusLg),
       clipBehavior: Clip.antiAlias,
-      elevation: 0.5,
+      elevation: 0,
       child: InkWell(
         onTap: onTap,
         child: SizedBox(
@@ -487,24 +454,27 @@ class _FeaturedChip extends StatelessWidget {
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: colors,
+                      colors: [
+                        scheme.primaryContainer.withValues(alpha: 0.35),
+                        scheme.primary.withValues(alpha: 0.2),
+                      ],
                     ),
                   ),
                   child: Stack(
                     children: [
-                      Center(child: Icon(icon, color: Colors.white70, size: 40)),
+                      Center(child: Icon(icon, color: scheme.primary.withValues(alpha: 0.85), size: 40)),
                       Positioned(
                         right: 6,
                         top: 6,
                         child: Material(
-                          color: Colors.white,
+                          color: scheme.surface,
                           shape: const CircleBorder(),
                           child: InkWell(
                             customBorder: const CircleBorder(),
                             onTap: onAdd,
-                            child: const Padding(
-                              padding: EdgeInsets.all(6),
-                              child: Icon(Icons.add_rounded, size: 18, color: AppColors.primary),
+                            child: Padding(
+                              padding: const EdgeInsets.all(6),
+                              child: Icon(Icons.add_rounded, size: 18, color: scheme.primary),
                             ),
                           ),
                         ),
